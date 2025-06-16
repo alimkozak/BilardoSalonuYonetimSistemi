@@ -1,0 +1,118 @@
+# Bilardo Salonu Yönetim Sistemi (BSS)
+
+## 1. Varlıklar
+
+### a) Masalar
+Nitelikler:
+- MasaID (Birincil anahtar)
+- Masa Numarası
+- Durum (Müsait, Dolu, Rezerve)
+- Başlangıç Zamanı
+- Bitiş Zamanı
+- Oyuncu Sayısı
+- Toplam Ücret
+- MüşteriID (Yabancı anahtar)
+- Müşteri Adı
+
+### b) Müşteriler
+Nitelikler:
+- MüşteriID (Birincil anahtar)
+- Ad Soyad
+- Telefon
+- E-posta
+- Kayıt Tarihi
+- Toplam Harcama
+- Ziyaret Sayısı
+- Son Ziyaret Tarihi
+
+### c) Ürünler
+Nitelikler:
+- ÜrünID (Birincil anahtar)
+- Ürün Adı
+- Kategori
+- Fiyat
+- Stok Miktarı
+- Eklenme Tarihi
+
+### d) Satışlar
+Nitelikler:
+- SatışID (Birincil anahtar)
+- MasaID (Yabancı anahtar)
+- MüşteriID (Yabancı anahtar)
+- Toplam Tutar
+- Ödeme Yöntemi (Nakit, Kredi Kartı)
+- Tarih
+
+### e) Siparişler
+Nitelikler:
+- SiparişID (Birincil anahtar)
+- MasaID (Yabancı anahtar)
+- ÜrünID (Yabancı anahtar)
+- Miktar
+- Birim Fiyat
+- Toplam Fiyat
+- Tarih
+
+### f) Rezervasyonlar
+Nitelikler:
+- RezervasyonID (Birincil anahtar)
+- MasaID (Yabancı anahtar)
+- MüşteriID (Yabancı anahtar)
+- Oyuncu Sayısı
+- Rezervasyon Tarihi
+- Rezervasyon Saati
+- Durum
+
+### g) Ödemeler
+Nitelikler:
+- ÖdemeID (Birincil anahtar)
+- Tutar
+- Para Birimi
+- Durum
+- Ödeme Tarihi
+- Ödeme Yöntemi
+- İşlem ID
+- Not
+
+### h) Bildirimler
+Nitelikler:
+- BildirimID (Birincil anahtar)
+- Başlık
+- Mesaj
+- Tür
+- Okunma Durumu
+- Zaman
+
+## 2. İlişkiler
+
+- Bir Masa, birden fazla Satış yapabilir.
+  Masalar (1) ↔ (N) Satışlar
+
+- Bir Müşteri, birden fazla Satış yapabilir.
+  Müşteriler (1) ↔ (N) Satışlar
+
+- Bir Masa, birden fazla Sipariş alabilir.
+  Masalar (1) ↔ (N) Siparişler
+
+- Bir Ürün, birden fazla Siparişte kullanılabilir.
+  Ürünler (1) ↔ (N) Siparişler
+
+- Bir Müşteri, birden fazla Rezervasyon yapabilir.
+  Müşteriler (1) ↔ (N) Rezervasyonlar
+
+- Bir Masa, birden fazla Rezervasyon alabilir.
+  Masalar (1) ↔ (N) Rezervasyonlar
+
+- Bir Satış, birden fazla Ödeme içerebilir.
+  Satışlar (1) ↔ (N) Ödemeler
+
+## 3. Mantıksal (İlişkisel şema)
+
+Masalar = {*masaID, masaNo, durum, baslangicZamani, bitisZamani, oyuncuSayisi, toplamUcret, +musteriID, musteriAdi}
+Müşteriler = {*musteriID, adSoyad, telefon, eposta, kayitTarihi, toplamHarcama, ziyaretSayisi, sonZiyaret}
+Ürünler = {*urunID, urunAdi, kategori, fiyat, stokMiktari, eklenmeTarihi}
+Satışlar = {*satisID, toplamTutar, odemeYontemi, tarih, +masaID, +musteriID}
+Siparişler = {*siparisID, miktar, birimFiyat, toplamFiyat, tarih, +masaID, +urunID}
+Rezervasyonlar = {*rezervasyonID, oyuncuSayisi, rezervasyonTarihi, rezervasyonSaati, durum, +masaID, +musteriID}
+Ödemeler = {*odemeID, tutar, paraBirimi, durum, tarih, yontemi, islemID, not, +satisID}
+Bildirimler = {*bildirimID, baslik, mesaj, tur, okunmaDurumu, zaman} 

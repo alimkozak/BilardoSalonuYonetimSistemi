@@ -1,0 +1,20 @@
+{
+  "name": "bilardo-salonu-yonetim",
+  "version": "1.0.0",
+  "description": "Bilardo Salonu Yönetim Sistemi",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "migrate": "node database/migrations/migrate-to-mysql.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^28.1.0"
+  },
+  "dependencies": {
+    "mysql2": "^3.6.0",
+    "dotenv": "^16.3.1"
+  }
+}

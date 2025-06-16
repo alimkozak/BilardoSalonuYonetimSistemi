@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bilardo Salonu Yönetim Sistemi</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-trophy"></i> Bilardo Salonu Yönetim Sistemi</h1>
+      <nav>
+        <button id="masalarBtn" class="active"><i class="fas fa-table"></i> Masalar</button>
+        <button id="rezervasyonlarBtn"><i class="fas fa-calendar-alt"></i> Rezervasyonlar</button>
+        <button id="siparislerBtn"><i class="fas fa-coffee"></i> Siparişler</button>
+        <button id="raporBtn"><i class="fas fa-chart-bar"></i> Raporlar</button>
+        <button id="musterilerBtn"><i class="fas fa-users"></i> Müşteriler</button>
+        <button id="adminBtn"><i class="fas fa-cog"></i> Admin</button>
+      </nav>
+    </header>
+    
+    <div class="theme-selector">
+      <label for="themeSelector">Tema: </label>
+      <select id="themeSelector">
+        <option value="default">Varsayılan</option>
+        <option value="dark">Koyu</option>
+      </select>
+    </div>
+
+    <main>
+      <section id="masalarSection" class="section active">
+        <div class="dashboard-container">
+          <div class="tables-container" id="tablesContainer">
+            <!-- Masalar buraya JavaScript ile eklenecek -->
+          </div>
+          
+          <div class="sidebar-reservations">
+            <div id="currentTime" class="current-time">Güncel Saat: --:--</div>
+            <h3>Rezervasyonlar</h3>
+            <div id="sidebarReservationsList">
+              <!-- Aktif rezervasyonlar buraya eklenecek -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="rezervasyonlarSection" class="section">
+        <!-- Rezervasyon listesi -->
+        <div class="reservations-list">
+          <h3>Aktif Rezervasyonlar</h3>
+          <div id="reservationsList">
+            <!-- Rezervasyonlar JavaScript ile doldurulacak -->
+          </div>
+        </div>
+      </section>
+
+      <section id="siparislerSection" class="section">
+        <div class="order-date-selector">
+          <label for="orderDateSelector">Tarih Seçin:</label>
+          <input type="date" id="orderDateSelector">
+          <button id="loadOrdersBtn" class="btn"><i class="fas fa-search"></i> Siparişleri Göster</button>
+        </div>
+        
+        <div class="orders-list">
+          <h3>Siparişler</h3>
+          <div id="ordersList">
+            <!-- Siparişler buraya JavaScript ile eklenecek -->
+          </div>
+        </div>
+      </section>
+
+      <section id="raporSection" class="section">
+        <div class="report-date-selector">
+          <label for="reportStartDate">Başlangıç:</label>
+          <input type="date" id="reportStartDate">
+          <label for="reportEndDate">Bitiş:</label>
+          <input type="date" id="reportEndDate">
+          <button id="loadReportBtn" class="btn">Raporu Göster</button>
+        </div>
+
+        <div class="reports-container reports-summary">
+          <div class="report-card">
+            <h3>Toplam Gelir</h3>
+            <p id="totalIncome">0 ₺</p>
+          </div>
+          <div class="report-card">
+            <h3>Masa Geliri</h3>
+            <p id="tableIncome">0 ₺</p>
+          </div>
+          <div class="report-card">
+            <h3>Ürün Geliri</h3>
+            <p id="productIncome">0 ₺</p>
+          </div>
+          <div class="report-card">
+            <h3>Masa Kullanımı</h3>
+            <p id="tableUsageTime">0 saat</p>
+          </div>
+        </div>
+
+        <div class="report-tabs">
+          <button class="report-tab-btn active" data-tab="summary">Özet</button>
+          <button class="report-tab-btn" data-tab="daily">Günlük Rapor</button>
+          <button class="report-tab-btn" data-tab="products">Ürün Satışları</button>
+          <button class="report-tab-btn" data-tab="customers">Müşteri Analizi</button>
+        </div>
+
+        <div class="report-content active" id="summary-content">
+          <div class="chart-container">
+            <canvas id="incomeChart"></canvas>
+          </div>
+        </div>
+
+        <div class="report-content" id="daily-content">
+          <div class="daily-report-list" id="dailyReportList">
+            <!-- Günlük rapor verileri buraya JavaScript ile eklenecek -->
+          </div>
+        </div>
+
+        <div class="report-content" id="products-content">
+          <div class="chart-container">
+            <canvas id="productSalesChart"></canvas>
+          </div>
+          <div class="product-report-list" id="productReportList">
+            <!-- Ürün rapor verileri buraya JavaScript ile eklenecek -->
+          </div>
+        </div>
+
+        <div class="report-content" id="customers-content">
+          <div class="customer-report-list" id="customerReportList">
+            <!-- Müşteri rapor verileri buraya JavaScript ile eklenecek -->
+          </div>
+        </div>
+      </section>
+      
+      <section id="musterilerSection" class="section">
+        <div class="admin-panel">
+          <div class="admin-card">
+            <h3>Müşteri Yönetimi</h3>
+            <div id="customerList">
+              <!-- Müşteriler JavaScript ile doldurulacak -->
+            </div>
+            <button id="addCustomerBtn" class="btn"><i class="fas fa-plus"></i> Yeni Müşteri Ekle</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="adminSection" class="section">
+        <!-- Başlık kaldırıldı -->
+        <div class="admin-panel">
+          <div class="admin-card">
+            <h3>Ürün Ayarları</h3>
+            <div class="products-list" id="productsList">
+              <!-- Ürünler buraya JavaScript ile eklenecek -->
+            </div>
+            <button id="addProductBtn" class="btn"><i class="fas fa-plus"></i> Yeni Ürün Ekle</button>
+          </div>
+          
+          <div class="admin-card">
+            <h3>Ücretlendirme Ayarları</h3>
+            <form id="pricingForm">
+              <div class="form-group">
+                <label for="oneOrTwoPeople">1-2 Kişi Saatlik Ücreti (₺):</label>
+                <input type="number" id="oneOrTwoPeople" min="1" required>
+              </div>
+              <div class="form-group">
+                <label for="threeOrFourPeople">3-4 Kişi Saatlik Ücreti (₺):</label>
+                <input type="number" id="threeOrFourPeople" min="1" required>
+              </div>
+              <div class="form-group">
+                <label for="additionalPersonFee">4 Kişi Üzeri Ek Kişi Ücreti (₺):</label>
+                <input type="number" id="additionalPersonFee" min="1" required>
+              </div>
+              <button type="submit" class="btn">Kaydet</button>
+            </form>
+          </div>
+          
+          <div class="admin-card">
+            <h3>Veritabanı Yönetimi</h3>
+            <p>Veritabanını yedekleyin veya eski bir yedekten geri yükleyin.</p>
+            <button id="showBackupModalBtn" class="btn"><i class="fas fa-database"></i> Veritabanı Yönetimi</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Masa Detay Modal -->
+    <div id="tableModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalTitle">Masa 1</h2>
+        
+        <div class="table-time-display">
+          <div class="time-item">
+            <div class="time-label">Başlangıç:</div>
+            <div id="tableStart" class="time-value">-</div>
+            <button id="editStartTimeBtn" class="btn small" style="display: none;"><i class="fas fa-edit"></i></button>
+          </div>
+          <div class="time-item">
+            <div class="time-label">Süre:</div>
+            <div id="tableDuration" class="time-value">-</div>
+          </div>
+        </div>
+        
+        <div class="table-details">
+          <p><strong>Durum:</strong> <span id="tableStatus">Müsait</span></p>
+          <p>
+            <strong>Oyuncu Sayısı:</strong> <span id="playerCount">-</span>
+            <button id="editPlayerCountBtn" class="btn small"><i class="fas fa-edit"></i></button>
+          </p>
+          <p><strong>Ücret:</strong> <span id="tableFee">0 ₺</span></p>
+        </div>
+        <div class="table-actions">
+          <button id="startTableBtn" class="btn">Başlat</button>
+          <button id="stopTableBtn" class="btn">Bitir</button>
+          <button id="refreshTableBtn" class="btn">Yenile</button>
+        </div>
+        
+        <!-- Oyuncu sayısı seçimi (Başlatma sırasında gösterilecek) -->
+        <div id="playerCountSelector" style="display: none;">
+          <h3>Oyuncu Sayısı</h3>
+          <div class="player-count-buttons">
+            <button class="player-btn" data-count="1">1</button>
+            <button class="player-btn" data-count="2">2</button>
+            <button class="player-btn" data-count="3">3</button>
+            <button class="player-btn" data-count="4">4</button>
+            <button class="player-btn" data-count="5">5</button>
+            <button class="player-btn" data-count="6">6</button>
+          </div>
+        </div>
+        
+        <!-- Sipariş ekleme formu -->
+        <div class="table-order-form">
+          <h3>Yeni Sipariş Ekle</h3>
+          <form id="modalOrderForm">
+            <div class="form-group">
+              <label for="modalProductSelect">Ürün:</label>
+              <select id="modalProductSelect" required></select>
+            </div>
+            <div class="form-group">
+              <label for="modalQuantity">Adet:</label>
+              <div class="input-group">
+                <input type="text" id="modalQuantity" value="1" readonly>
+                <button type="button" id="modalQuantityBtn" class="btn small"><i class="fas fa-keyboard"></i></button>
+              </div>
+            </div>
+            <button type="submit" class="btn">Sipariş Ekle</button>
+          </form>
+        </div>
+        
+        <div class="table-orders">
+          <h3>Masa Siparişleri</h3>
+          <div id="tableOrdersList">
+            <!-- Masa siparişleri buraya JavaScript ile eklenecek -->
+          </div>
+          <p><strong>Toplam:</strong> <span id="tableOrdersTotal">0 ₺</span></p>
+          <p><strong>Genel Toplam:</strong> <span id="tableGrandTotal">0 ₺</span></p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Ürün Modal -->
+    <div id="productModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="productModalTitle">Yeni Ürün Ekle</h2>
+        <form id="productForm">
+          <input type="hidden" id="productId">
+          <div class="form-group">
+            <label for="productName">Ürün Adı:</label>
+            <input type="text" id="productName" required>
+          </div>
+          <div class="form-group">
+            <label for="productPrice">Fiyat (₺):</label>
+            <div class="input-group">
+              <input type="text" id="productPrice" readonly>
+              <button type="button" id="productPriceBtn" class="btn small"><i class="fas fa-keyboard"></i></button>
+            </div>
+          </div>
+          <button type="submit" class="btn">Kaydet</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Hesap Detay Modal -->
+    <div id="billModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Hesap Detayı</h2>
+        
+        <div class="bill-details">
+          <div class="bill-item">
+            <span class="bill-label">Bilardo Ücreti:</span>
+            <span id="billBilliardFee" class="bill-value">0 ₺</span>
+          </div>
+          <div class="bill-item">
+            <span class="bill-label">Yan Ürünler:</span>
+            <span id="billProductTotal" class="bill-value">0 ₺</span>
+          </div>
+          <div class="bill-item total">
+            <span class="bill-label">Toplam:</span>
+            <span id="billTotalAmount" class="bill-value">0 ₺</span>
+          </div>
+        </div>
+        
+        <div class="bill-actions">
+          <button id="confirmBillBtn" class="btn">Onayla ve Masa Kapat</button>
+          <button id="cancelBillBtn" class="btn secondary">İptal</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sipariş Düzenleme Modal -->
+    <div id="editOrderModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Sipariş Düzenle</h2>
+        
+        <form id="editOrderForm">
+          <input type="hidden" id="editOrderId">
+          <div class="form-group">
+            <p id="editOrderInfo"></p>
+          </div>
+          <div class="form-group">
+            <label for="editOrderQuantity">Adet:</label>
+            <div class="input-group">
+              <input type="text" id="editOrderQuantity" readonly>
+              <button type="button" id="editOrderQuantityBtn" class="btn small"><i class="fas fa-keyboard"></i></button>
+            </div>
+          </div>
+          <button type="submit" class="btn">Güncelle</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Oyuncu Sayısı Düzenleme Modal -->
+    <div id="editPlayerCountModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Oyuncu Sayısını Düzenle</h2>
+        
+        <form id="editPlayerCountForm">
+          <div class="form-group">
+            <label for="editPlayerCountValue">Oyuncu Sayısı:</label>
+            <div class="input-group">
+              <input type="text" id="editPlayerCountValue" readonly value="2">
+              <button type="button" id="editPlayerCountValueBtn" class="btn small"><i class="fas fa-keyboard"></i></button>
+            </div>
+          </div>
+          <button type="submit" class="btn">Güncelle</button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Müşteri Modal - Güncellendi (E-posta kaldırıldı) -->
+    <div id="customerModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="customerModalTitle">Yeni Müşteri Ekle</h2>
+        <form id="customerForm">
+          <input type="hidden" id="customerId">
+          <div class="form-group">
+            <label for="customerName">Müşteri Adı:</label>
+            <input type="text" id="customerName" required>
+          </div>
+          <div class="form-group">
+            <label for="customerPhone">Telefon:</label>
+            <input type="text" id="customerPhone" required>
+          </div>
+          <button type="submit" class="btn">Kaydet</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Masa Renk Ayarları Modal -->
+    <div id="tableColorModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Masa Rengi Ayarla</h2>
+        <div class="form-group">
+          <label for="tableColorPicker">Renk Seçin:</label>
+          <input type="color" id="tableColorPicker" value="#d9221c">
+        </div>
+        <div class="table-color-presets">
+          <div class="color-preset" style="background-color: #d9221c" data-color="#d9221c"></div>
+          <div class="color-preset" style="background-color: #2ecc71" data-color="#2ecc71"></div>
+          <div class="color-preset" style="background-color: #3498db" data-color="#3498db"></div>
+          <div class="color-preset" style="background-color: #f1c40f" data-color="#f1c40f"></div>
+          <div class="color-preset" style="background-color: #9b59b6" data-color="#9b59b6"></div>
+          <div class="color-preset" style="background-color: #e67e22" data-color="#e67e22"></div>
+        </div>
+        <button id="applyTableColorBtn" class="btn">Uygula</button>
+        <button id="resetTableColorBtn" class="btn secondary">Varsayılana Sıfırla</button>
+      </div>
+    </div>
+
+    <!-- Veritabanı Yedekleme Modal -->
+    <div id="backupModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Veritabanı Yönetimi</h2>
+        <div class="backup-options">
+          <div class="backup-action">
+            <h3>Yedekleme</h3>
+            <p>Tüm veritabanını yedekleyip güvenli bir yere kaydedin.</p>
+            <button id="createBackupBtn" class="btn"><i class="fas fa-download"></i> Yedekleme Oluştur</button>
+          </div>
+          <div class="backup-action">
+            <h3>Geri Yükleme</h3>
+            <p>Daha önce oluşturulmuş bir yedekten veritabanını geri yükleyin.</p>
+            <button id="restoreBackupBtn" class="btn secondary"><i class="fas fa-upload"></i> Yedekten Geri Yükle</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Başlangıç Saati Ayarla Modal -->
+    <div id="startTimeModal" class="modal time-setup-modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Başlangıç Saati Ayarla</h2>
+        
+        <div class="time-display" id="selectedTimeDisplay">12:00</div>
+        
+        <div class="time-selectors">
+          <select id="hourSelect" class="time-select">
+            <option value="0">00</option>
+            <option value="1">01</option>
+            <option value="2">02</option>
+            <option value="3">03</option>
+            <option value="4">04</option>
+            <option value="5">05</option>
+            <option value="6">06</option>
+            <option value="7">07</option>
+            <option value="8">08</option>
+            <option value="9">09</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12" selected>12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+            <option value="18">18</option>
+            <option value="19">19</option>
+            <option value="20">20</option>
+            <option value="21">21</option>
+            <option value="22">22</option>
+            <option value="23">23</option>
+          </select>
+          
+          <span style="font-size: 24px; font-weight: bold;">:</span>
+          
+          <select id="minuteSelect" class="time-select">
+            <!-- JavaScript 15'er dakikalık seçenekler ekleyecek -->
+          </select>
+        </div>
+        
+        <div class="bill-actions">
+          <button id="applyStartTimeBtn" class="btn">Uygula</button>
+          <button id="cancelStartTimeBtn" class="btn secondary">İptal</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Rezervasyon Modalı - Yeni - Masa seçimi eklendi -->
+<div id="reservationModal" class="modal">
+  <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Yeni Rezervasyon</h2>
+      
+      <form id="reservationModalForm">
+          <div class="form-group">
+              <label for="reservationCustomerName">Müşteri:</label>
+              <p id="reservationCustomerName" class="selected-customer"></p>
+          </div>
+          
+          <div class="form-group">
+              <label for="reservationModalDate">Tarih:</label>
+              <input type="date" id="reservationModalDate" required>
+          </div>
+          
+          <div class="form-group">
+              <label for="reservationModalTime">Saat:</label>
+              <input type="time" id="reservationModalTime" required>
+          </div>
+          
+          <div class="form-group">
+              <label for="reservationModalPlayerCount">Kişi Sayısı:</label>
+              <input type="number" id="reservationModalPlayerCount" min="1" value="2" required>
+          </div>
+          
+          <div class="form-group" id="reservationTableSelectContainer">
+              <!-- Buraya JavaScript ile masa seçenekleri eklenecek -->
+          </div>
+          
+          <button type="submit" class="btn">Rezervasyon Oluştur</button>
+      </form>
+  </div>
+</div>
+    
+    <!-- Satış Düzenleme Modal - Yeni -->
+    <div id="editSaleModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Satış Düzenle</h2>
+        
+        <div id="saleDetails"></div>
+        
+        <div class="form-group">
+          <label for="editCustomerName">Müşteri Adı:</label>
+          <input type="text" id="editCustomerName">
+        </div>
+        
+        <div class="form-group">
+          <label for="editBilliardFee">Masa Ücreti (₺):</label>
+          <div class="input-group">
+            <input type="text" id="editBilliardFee" readonly>
+            <button type="button" id="editBilliardFeeBtn" class="btn small"><i class="fas fa-keyboard"></i></button>
+          </div>
+        </div>
+        
+        <div class="edit-sale-products">
+          <h3>Ürünler</h3>
+          <div id="editSaleProductsList"></div>
+          
+          <button id="addProductToSaleBtn" class="btn small">Ürün Ekle</button>
+        </div>
+        
+        <div class="bill-actions">
+          <button id="saveSaleBtn" class="btn">Kaydet</button>
+          <button id="cancelSaleEditBtn" class="btn secondary">İptal</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Adet Seçme Pop-up -->
+    <div class="number-selector-overlay" id="numberSelectorOverlay">
+      <div class="number-selector-container">
+        <h3 id="numberSelectorTitle">Adet Seçin</h3>
+        
+        <div class="number-display" id="numberDisplay">1</div>
+        
+        <div class="number-selector-buttons">
+          <button class="number-btn" data-value="1">1</button>
+          <button class="number-btn" data-value="2">2</button>
+          <button class="number-btn" data-value="3">3</button>
+          <button class="number-btn" data-value="4">4</button>
+          <button class="number-btn" data-value="5">5</button>
+          <button class="number-btn" data-value="6">6</button>
+          <button class="number-btn" data-value="7">7</button>
+          <button class="number-btn" data-value="8">8</button>
+          <button class="number-btn" data-value="9">9</button>
+          <button class="number-btn" data-value="0">0</button>
+          <button class="number-btn" data-value="clear">C</button>
+          <button class="number-btn" data-value="backspace"><i class="fas fa-backspace"></i></button>
+        </div>
+        
+        <div class="number-selector-actions">
+          <button class="cancel-btn" id="numberCancelBtn">İptal</button>
+          <button class="confirm-btn" id="numberConfirmBtn">Tamam</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
